@@ -34,12 +34,30 @@ app.get('/comments', (req, res) => {
 
 //add new comment
 app.post('/comments', (req, res) => {
+  console.log(req.body);
+  const comment = new Comment(req.body)
+    comment.save((err) => {
+      if (err) {
+        res.writeHead(500);
+        res.end();
+      } else {
+        res.writeHead(204);
+        res.end();
+      }
+    })
 
 });
 
-//get all comments with name
-app.get('/comments/:name', (req, res) =>{
-
+// get all comments with name
+app.get('/comments/:name', (req, res) => {
+  Comment.find({name: req.params.name}, (err, comments) => { // find all comments
+    if (err) {
+      res.writeHead(500);
+      res.end();
+    } else {
+      res.json(comments);
+    }
+  });
 });
 
 //listen to port 3000
