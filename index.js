@@ -1,31 +1,68 @@
-var mongoose = require('mongoose');
+const mongoose = require('mongoose');
+const express = require('express');
+const bodyParser = require('body-parser')
 
 // connection to the DB guestBook
 mongoose.connect('mongodb://localhost/guestBook');
 
-var comment = mongoose.model('comment', {
+// create express app
+const app = express();
+
+
+const Comment = mongoose.model('comment', {
   name: String,
   email: String,
   content: String,
   timeStamp: Date,
 });
 
-var comment = new comment({
-  name: 'Biss',
-  email: 'biss@livingroom.com',
-  content: 'biss likes everything'
+// use middleware
+app.use(bodyParser.json());
+
+// get all comments route
+app.get('/comments', (req, res) => {
+  Comment.find((err, comments) => {
+      if (err) {
+        console.log(err);
+      } else {
+        // write all comments
+        res.write(JSON.stringify(comments));
+        res.end();
+      }
+
+  })});
+
+//add new comment
+app.post('/comments', (req, res) => {
+
 });
 
-comment.save((err) =>{
-  if (err) {
-    console.log(err);
-  } else {
-    comment.find((err, comments) =>{
-        if (err) {
-          console.log(err);
-        } else {
-          console.log(comments)
-        }
-    })
-  }
+//get all comments with name
+app.get('/comments/:name', (req, res) =>{
+
 });
+
+//listen to port 3000
+app.listen(3000);
+
+
+// create new comment
+// const comment = new Comment({
+//   name: 'Biss',
+//   email: 'biss@livingroom.com',
+//   content: 'biss likes everything'
+// });
+//
+// comment.save((err) =>{
+//   if (err) {
+//     console.log(err);
+//   } else {
+//     Comment.find((err, comments) =>{
+//         if (err) {
+//           console.log(err);
+//         } else {
+//           console.log(comments)
+//         }
+//     })
+//   }
+// });
